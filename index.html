@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>UOBI ByTS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0e0d0f;
+    --panel: #17151566;
+    --panel-solid: #171516;
+    --chalk: #ede9e1;
+    --smoke: #948d7e;
+    --ember: #e1481f;
+    --rebar: #34302b;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  *, *::before, *::after { box-sizing: inherit; }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); scroll-behavior: smooth; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    background: var(--ink);
+    color: var(--chalk);
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  ::selection { background: var(--ember); color: var(--ink); }
+
+  .display {
+    font-family: 'Anton', 'Arial Narrow', sans-serif;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.01em;
+    line-height: 0.86;
+  }
+
+  a { color: inherit; }
+  a:focus-visible, button:focus-visible {
+    outline: 2px solid var(--ember);
+    outline-offset: 4px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+  }
+
+  .wrap {
+    width: 100%;
+    max-width: 1180px;
+    margin: 0 auto;
+    padding-left: clamp(20px, 5vw, 56px);
+    padding-right: clamp(20px, 5vw, 56px);
+  }
+
+  /* ---------- nav ---------- */
+  header {
+    position: sticky;
+    top: env(safe-area-inset-top, 0px);
+    z-index: 40;
+    background: rgba(14,13,15,0.86);
+    backdrop-filter: blur(6px);
+    border-bottom: 1px solid var(--rebar);
+  }
+  .navrow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 58px;
+  }
+  .brandmark {
+    font-family: 'Anton', sans-serif;
+    text-transform: uppercase;
+    font-size: 18px;
+    letter-spacing: 0.03em;
+  }
+  nav.links { display: flex; gap: clamp(14px, 3vw, 28px); font-size: 12px; letter-spacing: 0.04em; }
+  nav.links a { text-decoration: none; color: var(--smoke); transition: color .15s ease; }
+  nav.links a:hover { color: var(--chalk); }
+
+  /* ---------- hero ---------- */
+  .hero {
+    min-height: calc(100svh - 58px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    padding-top: 40px;
+    padding-bottom: 40px;
+    background:
+      repeating-linear-gradient(180deg, rgba(237,233,225,0.025) 0px, rgba(237,233,225,0.025) 1px, transparent 1px, transparent 42px);
+  }
+  .hero-eyebrow {
+    font-size: 12px;
+    color: var(--ember);
+    letter-spacing: 0.04em;
+    margin: 0 0 18px;
+  }
+  .hero h1 {
+    margin: 0;
+    font-size: clamp(76px, 17vw, 190px);
+  }
+  .hero h1 .line { display: block; }
+  .hero h1 .line + .line { margin-top: -0.03em; }
+  .hero-sub {
+    margin-top: 28px;
+    max-width: 46ch;
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--smoke);
+  }
+  .hero-meta {
+    margin-top: 34px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 22px;
+    font-size: 11px;
+    color: var(--smoke);
+  }
+  .hero-meta span { position: relative; padding-left: 14px; }
+  .hero-meta span::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 50%;
+    width: 6px; height: 1px;
+    background: var(--ember);
+    transform: translateY(-50%);
+  }
+  .hero-cta {
+    margin-top: 40px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    width: fit-content;
+    padding: 14px 22px;
+    background: var(--chalk);
+    color: var(--ink);
+    text-decoration: none;
+    font-size: 13px;
+    letter-spacing: 0.03em;
+    font-weight: 500;
+    transition: background .15s ease, transform .15s ease;
+  }
+  .hero-cta:hover { background: var(--ember); color: var(--ink); }
+  .hero-cta:active { transform: scale(0.98); }
+
+  /* ---------- section shell ---------- */
+  section { padding: clamp(64px, 10vw, 128px) 0; border-top: 1px solid var(--rebar); }
+  .kicker {
+    font-size: 11px;
+    color: var(--ember);
+    letter-spacing: 0.04em;
+    margin: 0 0 14px;
+  }
+  h2.section-title {
+    font-family: 'Anton', sans-serif;
+    text-transform: uppercase;
+    font-size: clamp(34px, 5vw, 54px);
+    line-height: 0.95;
+    margin: 0 0 40px;
+    max-width: 16ch;
+  }
+
+  /* ---------- about ---------- */
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: clamp(32px, 6vw, 80px);
+    align-items: start;
+  }
+  .about-grid p {
+    font-size: 15px;
+    line-height: 1.85;
+    color: #d8d3c8;
+    margin: 0 0 18px;
+    max-width: 58ch;
+  }
+  .setlist { border-top: 1px solid var(--rebar); }
+  .setlist li {
+    list-style: none;
+    display: flex;
+    gap: 16px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--rebar);
+    font-size: 13px;
+    align-items: baseline;
+  }
+  .setlist .n { color: var(--ember); flex-shrink: 0; }
+  .setlist .t { color: var(--chalk); }
+  .setlist .d { color: var(--smoke); font-size: 11px; margin-top: 4px; display: block; }
+
+  @media (max-width: 760px) {
+    .about-grid { grid-template-columns: 1fr; }
+  }
+
+  /* ---------- drops / tracklist ---------- */
+  .track-row {
+    display: grid;
+    grid-template-columns: 44px 1fr auto auto;
+    align-items: center;
+    gap: 18px;
+    padding: 22px 0;
+    border-bottom: 1px solid var(--rebar);
+    text-decoration: none;
+    color: inherit;
+    position: relative;
+  }
+  .track-row:first-child { border-top: 1px solid var(--rebar); }
+  .track-row .n { color: var(--smoke); font-size: 13px; }
+  .track-row .title {
+    font-family: 'Anton', sans-serif;
+    text-transform: uppercase;
+    font-size: clamp(18px, 2.6vw, 26px);
+    letter-spacing: 0.01em;
+  }
+  .track-row .tag {
+    font-size: 10px;
+    color: var(--smoke);
+    letter-spacing: 0.03em;
+    white-space: nowrap;
+  }
+  .track-row .go {
+    font-size: 13px;
+    color: var(--smoke);
+    transition: transform .15s ease, color .15s ease;
+  }
+  .track-row:hover .go { color: var(--ember); transform: translateX(4px); }
+  .track-row::after {
+    content: '';
+    position: absolute;
+    left: 0; bottom: -1px;
+    height: 1px; width: 0%;
+    background: var(--ember);
+    transition: width .25s ease;
+  }
+  .track-row:hover::after { width: 100%; }
+
+  @media (max-width: 640px) {
+    .track-row { grid-template-columns: 28px 1fr; row-gap: 6px; }
+    .track-row .tag, .track-row .go { grid-column: 2; }
+  }
+
+  /* ---------- statement ---------- */
+  .statement {
+    text-align: left;
+  }
+  .statement blockquote {
+    margin: 0;
+    font-family: 'Anton', sans-serif;
+    text-transform: uppercase;
+    font-size: clamp(28px, 6vw, 58px);
+    line-height: 1.05;
+    max-width: 22ch;
+  }
+  .statement-rule {
+    width: 64px;
+    height: 3px;
+    background: var(--ember);
+    margin-bottom: 24px;
+  }
+
+  /* ---------- footer / booking ---------- */
+  footer {
+    border-top: 1px solid var(--rebar);
+    padding: clamp(56px, 9vw, 100px) 0 40px;
+  }
+  .foot-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: clamp(32px, 6vw, 60px);
+  }
+  .foot-cta h2 {
+    font-family: 'Anton', sans-serif;
+    text-transform: uppercase;
+    font-size: clamp(36px, 6vw, 64px);
+    line-height: 0.95;
+    margin: 0 0 24px;
+  }
+  .subscribe-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 15px 24px;
+    border: 1px solid var(--chalk);
+    text-decoration: none;
+    color: var(--chalk);
+    font-size: 13px;
+    letter-spacing: 0.03em;
+    transition: background .15s ease, color .15s ease;
+  }
+  .subscribe-btn:hover { background: var(--ember); border-color: var(--ember); color: var(--ink); }
+  .foot-links { font-size: 12px; }
+  .foot-links dt { color: var(--smoke); margin-top: 22px; }
+  .foot-links dt:first-child { margin-top: 0; }
+  .foot-links dd { margin: 6px 0 0; }
+  .foot-links a { text-decoration: none; }
+  .foot-links a:hover { color: var(--ember); }
+  .foot-bottom {
+    margin-top: 60px;
+    padding-top: 20px;
+    border-top: 1px solid var(--rebar);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    font-size: 10px;
+    color: var(--smoke);
+    letter-spacing: 0.03em;
+  }
+
+  @media (max-width: 700px) {
+    .foot-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap navrow">
+    <div class="brandmark">UOBI ByTS</div>
+    <nav class="links">
+      <a href="#about">About</a>
+      <a href="#drops">Drops</a>
+      <a href="#contact">Booking</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <p class="hero-eyebrow">Underground · Rap / Hip-Hop</p>
+    <h1 class="display">
+      <span class="line">UOBI</span>
+      <span class="line">ByTS</span>
+    </h1>
+    <p class="hero-sub">Heavy basslines, relentless flows, raw lyricism. Sharp storytelling built on hard-hitting rap beats — straight from the underground, zero compromise.</p>
+    <div class="hero-meta">
+      <span>Official videos</span>
+      <span>Freestyle drops</span>
+      <span>Studio sessions</span>
+    </div>
+    <a class="hero-cta" href="https://youtube.com/@uobibyts" target="_blank" rel="noopener">Watch on YouTube →</a>
+  </div>
+</section>
+
+<section id="about">
+  <div class="wrap about-grid">
+    <div>
+      <p class="kicker">The story</p>
+      <h2 class="section-title">No filter. No compromise.</h2>
+      <p>UOBI ByTS makes music for people who want authentic energy over polish — complex rhyme schemes stacked on beats built to move a room. Every drop pairs sharp storytelling with production that hits low and hits hard.</p>
+      <p>The channel is a direct line into the process: finished videos sit next to freestyle drops and behind-the-scenes studio sessions, so nothing about the work is hidden from the people who follow it.</p>
+      <p><a href="https://aboutubaidurrehman.github.io/.com" target="_blank" rel="noopener" style="color: var(--ember); text-decoration: none; border-bottom: 1px solid var(--ember);">More about the artist →</a></p>
+    </div>
+    <ul class="setlist">
+      <li>
+        <span class="n">01</span>
+        <span>
+          <span class="t">Official Music Videos</span>
+          <span class="d">Fully produced releases</span>
+        </span>
+      </li>
+      <li>
+        <span class="n">02</span>
+        <span>
+          <span class="t">Underground Freestyle Drops</span>
+          <span class="d">Unfiltered, off-the-cuff bars</span>
+        </span>
+      </li>
+      <li>
+        <span class="n">03</span>
+        <span>
+          <span class="t">Studio Sessions</span>
+          <span class="d">Behind the process, behind the scenes</span>
+        </span>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<section id="drops">
+  <div class="wrap">
+    <p class="kicker">Latest</p>
+    <h2 class="section-title">On the channel</h2>
+
+    <a class="track-row" href="https://youtube.com/@uobibyts" target="_blank" rel="noopener">
+      <span class="n">01</span>
+      <span class="title">Latest official video</span>
+      <span class="tag">Official Video</span>
+      <span class="go">Watch →</span>
+    </a>
+    <a class="track-row" href="https://youtube.com/@uobibyts" target="_blank" rel="noopener">
+      <span class="n">02</span>
+      <span class="title">Newest freestyle drop</span>
+      <span class="tag">Freestyle</span>
+      <span class="go">Watch →</span>
+    </a>
+    <a class="track-row" href="https://youtube.com/@uobibyts" target="_blank" rel="noopener">
+      <span class="n">03</span>
+      <span class="title">In the studio</span>
+      <span class="tag">Studio Session</span>
+      <span class="go">Watch →</span>
+    </a>
+
+    <p style="margin-top: 28px; font-size: 12px; color: var(--smoke);">Placeholder titles — swap these three rows for your actual video names and links whenever you drop something new.</p>
+  </div>
+</section>
+
+<section class="statement">
+  <div class="wrap">
+    <div class="statement-rule"></div>
+    <blockquote>Authentic energy. Complex rhyme schemes. If you're looking for real, you found it.</blockquote>
+  </div>
+</section>
+
+<footer id="contact">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-cta">
+        <h2>Never<br>miss a drop.</h2>
+        <a class="subscribe-btn" href="https://youtube.com/@uobibyts" target="_blank" rel="noopener">Subscribe on YouTube →</a>
+      </div>
+      <dl class="foot-links">
+        <dt>Bookings & collabs</dt>
+        <dd><a href="mailto:ubaidurrehman2243@gmail.com">ubaidurrehman2243@gmail.com</a></dd>
+        <dt>Channel</dt>
+        <dd><a href="https://youtube.com/@uobibyts" target="_blank" rel="noopener">youtube.com/@uobibyts</a></dd>
+        <dt>Instagram</dt>
+        <dd><a href="https://www.instagram.com/uobi.byts?stkn=bnQ5cml4NDlrcmVy" target="_blank" rel="noopener">@uobi.byts</a></dd>
+      </dl>
+    </div>
+    <div class="foot-bottom">
+      <span>UOBI ByTS</span>
+      <span>Underground rap · beats · freestyle</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
